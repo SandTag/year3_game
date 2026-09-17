@@ -2,6 +2,9 @@
 # Prerequisites
 *.d
 
+# Libs
+SFML/
+
 # Compiled Object files
 *.slo
 *.lo
