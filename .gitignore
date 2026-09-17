@@ -4,6 +4,7 @@
 
 # Libs
 SFML/
+out/
 
 # Compiled Object files
 *.slo
