@@ -13,7 +13,7 @@ int main() {
             }
         }
         window.clear();
-        window.draw(shape);
+        window.draw(shape);//o
         window.display();
     }
     return 0;
