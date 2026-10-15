@@ -78,38 +78,38 @@ static void init() {
 
 static void update(float dt) {
     // handle paddle movement
-    float direction = 0.0f;
+    float direction0 = 0.0f;
     if (sf::Keyboard::isKeyPressed(controls[0])
         &&
         paddles[0].getPosition().y > paddleSize.y / 2.f//lower boundary
         ) {
-        direction--;
+        direction0--;
     }
     if (sf::Keyboard::isKeyPressed(controls[1])
         &&
         paddles[0].getPosition().y < game_height - paddleSize.y / 2.f
         ) {
-        direction++;
+        direction0++;
     }//Keybinds
 
-    paddles[0].move(sf::Vector2f(0.f, direction * paddleSpeed * dt));//Paddle left Calc Movement
+    paddles[0].move(sf::Vector2f(0.f, direction0 * paddleSpeed * dt));//Paddle left Calc Movement
 
     //paddle 2
-    float direction = 0.0f;
+    float direction1 = 0.0f;
     if (sf::Keyboard::isKeyPressed(controls[2])
         &&
-        paddles[1].getPosition().y < game_height - paddleSize.y / 2.f
+        paddles[1].getPosition().y > paddleSize.y / 2.f
         ) {
-        direction--;
+        direction1--;
     }
     if (sf::Keyboard::isKeyPressed(controls[3])
         &&
-        paddles[1].getPosition().y > paddleSize.y / 2.f//lower boundary
+        paddles[1].getPosition().y < game_height - paddleSize.y / 2.f
         ) {
-        direction++;
+        direction1++;
     }//Keybinds
 
-    paddles[1].move(sf::Vector2f(0.f, direction * paddleSpeed * dt));//Paddle right Calc Movement
+    paddles[1].move(sf::Vector2f(0.f, direction1 * paddleSpeed * dt));//Paddle right Calc Movement
 
     ball.move(ball_velocity * dt);//Ball Calc Movement
 
