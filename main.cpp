@@ -30,7 +30,39 @@ const float velocity_multiplier = 1.1f; //how much the ball will speed up everyt
 //=============================================================================================
 //Pong Code
 
+void ballBounce() {
+    ball_velocity.x = (ball_velocity.x * -velocity_multiplier);
+    ball_velocity.y = (ball_velocity.y * -velocity_multiplier);
+}
 
+void resetObjs() {
+    // reset paddle position
+    paddles[0].setPosition(paddleOffsetWall + paddleSize.x / 2.f, game_height / 2.f);
+    paddles[1].setPosition((800.f - (paddleOffsetWall + (paddleSize.x / 2.f))), game_height / 2.f);
+    // reset Ball Position
+    ball.setPosition(game_width / 2.f, game_height / 2.f);
+}
+
+void reset() {
+    resetObjs();
+    ball_velocity = { (is_player1_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
+}
+
+bool paddleCollided(sf::RectangleShape paddle, float bx, float by) {
+    //left paddle
+    //ball is inline or behind paddle AND
+    if (
+        bx < paddleSize.x + paddleOffsetWall &&
+        //ball is below top edge of paddle AND
+        by > paddle.getPosition().y - (paddleSize.y * 0.45f) &&
+        //ball is above bottom edge of paddle
+        by < paddle.getPosition().y + (paddleSize.y * 0.45f)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 void init() {
     // Set size and origin of paddles
@@ -79,9 +111,6 @@ void update(float dt) {
 
     paddles[1].move(sf::Vector2f(0.f, direction * paddleSpeed * dt));//Paddle right Calc Movement
 
-
-
-
     ball.move(ball_velocity * dt);//Ball Calc Movement
 
     // check ball collision after movement
@@ -123,45 +152,11 @@ void update(float dt) {
     
 }
 
-bool paddleCollided(sf::RectangleShape paddle, float bx, float by) {
-    //left paddle
-    //ball is inline or behind paddle AND
-    if (
-        bx < paddleSize.x + paddleOffsetWall &&
-        //ball is below top edge of paddle AND
-        by > paddle.getPosition().y - (paddleSize.y * 0.45f) &&
-        //ball is above bottom edge of paddle
-        by < paddle.getPosition().y + (paddleSize.y * 0.45f)) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-void ballBounce() {
-     ball_velocity.x = (ball_velocity.x * -velocity_multiplier);
-     ball_velocity.y = (ball_velocity.y * -velocity_multiplier);
-}
-
 void render(sf::RenderWindow& window) {
     // Draw Everything
     window.draw(paddles[0]);
     window.draw(paddles[1]);
     window.draw(ball);
-}
-
-void reset() {
-    resetObjs();
-    ball_velocity = { (is_player1_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y};
-}
-
-void resetObjs() {
-    // reset paddle position
-    paddles[0].setPosition(paddleOffsetWall + paddleSize.x / 2.f, game_height / 2.f);
-    paddles[1].setPosition((800.f - (paddleOffsetWall + (paddleSize.x / 2.f))), game_height / 2.f);
-    // reset Ball Position
-    ball.setPosition(game_width / 2.f, game_height / 2.f);
 }
 
 void clean() {
