@@ -30,12 +30,12 @@ const float velocity_multiplier = 1.1f; //how much the ball will speed up everyt
 //=============================================================================================
 //Pong Code
 
-void ballBounce() {
+static void ballBounce() {
     ball_velocity.x = (ball_velocity.x * -velocity_multiplier);
     ball_velocity.y = (ball_velocity.y * -velocity_multiplier);
 }
 
-void resetObjs() {
+static void resetObjs() {
     // reset paddle position
     paddles[0].setPosition(paddleOffsetWall + paddleSize.x / 2.f, game_height / 2.f);
     paddles[1].setPosition((800.f - (paddleOffsetWall + (paddleSize.x / 2.f))), game_height / 2.f);
@@ -43,12 +43,12 @@ void resetObjs() {
     ball.setPosition(game_width / 2.f, game_height / 2.f);
 }
 
-void reset() {
+static void reset() {
     resetObjs();
     ball_velocity = { (is_player1_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
 }
 
-bool paddleCollided(sf::RectangleShape paddle, float bx, float by) {
+static bool paddleCollided(sf::RectangleShape paddle, float bx, float by) {
     //left paddle
     //ball is inline or behind paddle AND
     if (
@@ -64,7 +64,7 @@ bool paddleCollided(sf::RectangleShape paddle, float bx, float by) {
     }
 }
 
-void init() {
+static void init() {
     // Set size and origin of paddles
     for (sf::RectangleShape& p : paddles) {
         p.setSize(paddleSize);
@@ -76,7 +76,7 @@ void init() {
     resetObjs();
 }
 
-void update(float dt) {
+static void update(float dt) {
     // handle paddle movement
     float direction = 0.0f;
     if (sf::Keyboard::isKeyPressed(controls[0])
@@ -152,18 +152,18 @@ void update(float dt) {
     
 }
 
-void render(sf::RenderWindow& window) {
+static void render(sf::RenderWindow& window) {
     // Draw Everything
     window.draw(paddles[0]);
     window.draw(paddles[1]);
     window.draw(ball);
 }
 
-void clean() {
+static void clean() {
     //free up the memory if necessary.
 }
 
-void pong() {
+static void pong() {
     	//create the window
 	sf::RenderWindow window(sf::VideoMode({game_width, game_height}), "PONG");
 
