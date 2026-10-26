@@ -2,11 +2,12 @@
 
 //=============================================================================================
 //Pong Params and keybinds
-const sf::Keyboard::Key controls[4] = {
+const sf::Keyboard::Key controls[5] = {
     sf::Keyboard::W,
     sf::Keyboard::S,
     sf::Keyboard::Up,
-    sf::Keyboard::Down
+    sf::Keyboard::Down,
+    sf::Keyboard::Escape
 };
 
 const sf::Vector2f paddleSize(25.f, 100.f);
@@ -26,6 +27,7 @@ const float initial_velocity_x = 100.f; //horizontal velocity
 const float initial_velocity_y = 60.f; //vertical velocity
 
 const float velocity_multiplier = 1.1f; //how much the ball will speed up everytime it hits a paddle. Here, 10% every time.
+sf::RenderWindow windowMain(sf::VideoMode({ game_width, game_height }), "PONG");
 
 //=============================================================================================
 //Pong Code
@@ -48,16 +50,36 @@ static void reset() {
     ball_velocity = { (is_player1_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
 }
 
-static bool paddleCollided(sf::RectangleShape paddle, float bx, float by) {
-    //left paddle
-    //ball is inline or behind paddle AND
-    if (
+static bool paddleCollided(sf::RectangleShape paddle, float bx, float by, bool R) {
+
+    if (R) {//Right
+        if (
+        bx > paddleSize.x + paddleOffsetWall &&
+            by > paddle.getPosition().y - (paddleSize.y * 0.5f) &&
+            by < paddle.getPosition().y + (paddleSize.y * 0.5f))
+            {
+                return true;
+    }
+    }
+    else if (//Left
+
+        //ball is inline or behind paddle AND
         bx < paddleSize.x + paddleOffsetWall &&
         //ball is below top edge of paddle AND
-        by > paddle.getPosition().y - (paddleSize.y * 0.45f) &&
+        by > paddle.getPosition().y - (paddleSize.y * 0.5f) &&
         //ball is above bottom edge of paddle
-        by < paddle.getPosition().y + (paddleSize.y * 0.45f)) {
+        by < paddle.getPosition().y + (paddleSize.y * 0.5f)) {
         return true;
+
+        /*
+        //ball is inline or behind paddle AND
+	    bx < paddle_size.x + paddle_offset_wall && 
+	     //ball is below top edge of paddle AND
+	    by > paddles[0].getPosition().y - (paddle_size.y * 0.5) &&
+	    //ball is above bottom edge of paddle
+	    by < paddles[0].getPosition().y + (paddle_size.y * 0.5)){
+            //bounces off left paddle
+        */
     }
     else {
         return false;
@@ -73,7 +95,7 @@ static void init() {
     // Set size and origin of ball
     ball.setRadius(ballRadius);
     ball.setOrigin(5.f, 5.f); //Half the ball width and height
-    resetObjs();
+    reset();
 }
 
 static void update(float dt) {
@@ -109,6 +131,12 @@ static void update(float dt) {
         direction1++;
     }//Keybinds
 
+    if (sf::Keyboard::isKeyPressed(controls[4]))//Close the window and exit the program with escape key.
+    {
+        windowMain.close();
+        exit(0);
+    }
+
     paddles[1].move(sf::Vector2f(0.f, direction1 * paddleSpeed * dt));//Paddle right Calc Movement
 
     ball.move(ball_velocity * dt);//Ball Calc Movement
@@ -130,17 +158,15 @@ static void update(float dt) {
     }
 
     else if (
-        paddleCollided(paddles[0], bx, by)) {
+        paddleCollided(paddles[0], bx, by, false)) {
         ballBounce();
         ball.move(sf::Vector2f(+10.f, 0));
     }
-
     else if (
-        paddleCollided(paddles[1], bx, by)) {
+        paddleCollided(paddles[1], bx, by, true)) {
         ballBounce();
         ball.move(sf::Vector2f(-10.f, 0));
     }
-
     else if (bx > game_width) {
         // right wall
         reset();
@@ -165,27 +191,27 @@ static void clean() {
 
 static void pong() {
     	//create the window
-	sf::RenderWindow window(sf::VideoMode({game_width, game_height}), "PONG");
+	//windowMain = sf::RenderWindow(sf::VideoMode({game_width, game_height}), "PONG");
 
     // enable or disable vsync - do at start of game, or via options menu
-    window.setVerticalSyncEnabled(true);
+    windowMain.setVerticalSyncEnabled(true);
 
     //initialise and load
 	init();
-	while(window.isOpen()){
+	while(windowMain.isOpen()){
         static sf::Clock clock;
         const float dt = clock.restart().asSeconds();
 		//Calculate dt
 		
-		window.clear();
+        windowMain.clear();
 		update(dt);
-		render(window);
+		render(windowMain);
 		//wait for the time_step to finish before displaying the next frame.
 		sf::sleep(sf::seconds(time_step));
 
 
 		//Wait for Vsync
-        window.display();
+        windowMain.display();
 	}
 	//Unload and shutdown
 	clean();
