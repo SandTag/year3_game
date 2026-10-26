@@ -1,11 +1,11 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 const sf::Keyboard::Key controls[4] = {
-    sf::Keyboard::A,   // Player1 UP
-    sf::Keyboard::Z,   // Player1 Down
-    sf::Keyboard::Up,  // Player2 UP
-    sf::Keyboard::Down // Player2 Down
+    sf::Keyboard::W,   // Player1 Fire
+    sf::Keyboard::A,   // Player1 Left
+    sf::Keyboard::D,  // Player2 Right
 };
 
 //Parameters
@@ -14,9 +14,13 @@ const int game_height = 600;
 const float time_step = 0.017f; //60 fps
 int score[2] = { 0,0 };
 
-//Objects of the game
+//Objects
 sf::Text text;
 sf::Font font;
+sf::Sprite invader;
+
+//Textures
+sf::Texture spritesheet;
 
 
 void reset() {
@@ -30,6 +34,14 @@ void init() {
     // set the character size to 24 pixels
     text.setCharacterSize(24);
     text.setColor(sf::Color(255, 255, 255));
+
+    //Load invader
+    if (!spritesheet.loadFromFile("/resources/img/invaders_sheet.png")) {
+        std::cerr << "Failed to load spritesheet!" << std::endl;
+    }
+    invader.setTexture(spritesheet);
+    invader.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(32, 32)));
+
     reset();
 }
 
@@ -43,6 +55,7 @@ void update(float dt) {
 void render(sf::RenderWindow& window) {
     // Draw Everything
     window.draw(text);
+    window.draw(invader);
 }
 
 int main() {
